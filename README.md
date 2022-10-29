@@ -4,9 +4,6 @@
 # Multi Notebook
 A desktop application that allows pupils and students to create and share convenient manuals. In progress...
 
-## Team
-- #Ryzhik Daniel
-- #Aksenova Anastasia
 
 ## Технологии
 - [PyQt5](https://doc.qt.io/qtforpython/)
@@ -44,3 +41,4 @@ python -m pip install -r requirements. txt
 ## Команда проекта
 
 - [Ryzhik Daniel](vk:/https://vk.com/ginger20) — Python developer
+- [Aksenova Anastasia](vk:/https://vk.com/littlemeoww) — Designer

@@ -5,7 +5,7 @@
 A desktop application that allows pupils and students to create and share convenient manuals. In progress...
 
 
-## Technologys
+## Technologies
 - [PyQt5](https://doc.qt.io/qtforpython/)
 - [SqLite3](https://www.sqlite.org/docs.html)
 - ...
@@ -38,7 +38,7 @@ python -m pip install -r requirements. txt
 - [ ] Interface
 - [ ] Database
 
-## Команда проекта
+## Project team
 
 - [Ryzhik Daniel](https://vk.com/ginger20) — Python developer
 - [Aksenova Anastasia](https://vk.com/littlemeoww) — Designer

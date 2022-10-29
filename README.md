@@ -5,7 +5,7 @@
 A desktop application that allows pupils and students to create and share convenient manuals. In progress...
 
 
-## Технологии
+## Technologys
 - [PyQt5](https://doc.qt.io/qtforpython/)
 - [SqLite3](https://www.sqlite.org/docs.html)
 - ...

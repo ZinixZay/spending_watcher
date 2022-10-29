@@ -40,5 +40,5 @@ python -m pip install -r requirements. txt
 
 ## Команда проекта
 
-- [Ryzhik Daniel](vk:/https://vk.com/ginger20) — Python developer
-- [Aksenova Anastasia](vk:/https://vk.com/littlemeoww) — Designer
+- [Ryzhik Daniel](https://vk.com/ginger20) — Python developer
+- [Aksenova Anastasia](https://vk.com/littlemeoww) — Designer

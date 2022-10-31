@@ -2,7 +2,7 @@
 ### Computer science student
 
 # Spending Watcher
-A desktop application that helps people to control and plan their money spending/gaining. In progress...
+A desktop application which helps people to control and plan their money spending/gaining. In progress...
 
 
 ## Technologies

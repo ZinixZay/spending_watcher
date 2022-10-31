@@ -1,8 +1,8 @@
 # Hi there, I'm [Daniel](https://vk.com/ginger20) ![](https://github.com/blackcater/blackcater/raw/main/images/Hi.gif) 
 ### Computer science student
 
-# Multi Notebook
-A desktop application that allows pupils and students to create and share convenient manuals. In progress...
+# Spending Watcher
+A desktop application that helps people to control and plan their money spending/gaining. In progress...
 
 
 ## Technologies

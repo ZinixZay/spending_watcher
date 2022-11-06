@@ -1,4 +1,5 @@
 from database_commands import *
+from logical_part import *
 
 
 class SpendRecord:
@@ -7,7 +8,7 @@ class SpendRecord:
         self.description = description
 
     def submit_record(self):
-        add_expense_to_a_database(value=self.value, description=self.description)
+        add_expense(value=self.value, description=self.description, category=select_expense_class(self.description))
 
 
 class IncomeRecord:
@@ -16,7 +17,7 @@ class IncomeRecord:
         self.description = description
 
     def submit_record(self):
-        add_income_to_a_database(value=self.value, description=self.description)
+        add_income(value=self.value, description=self.description)
 
 
 # Error Classes

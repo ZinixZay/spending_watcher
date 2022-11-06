@@ -23,20 +23,23 @@ def disconnect_from_database(con: Type) -> NoReturn:
     con.close()
 
 
-def add_expense_to_a_database(value: int, description: str) -> NoReturn:
+def add_expense(value: int, description: str, category: str) -> NoReturn:
     """
     Adds a money spend record to a database
     :param value: amount of spended money
     :param description: what was the money spent on
+    :param category: category of an expense
     :return: NoReturn
     """
     con, cur = connect_to_database()
     cur.execute(f'INSERT INTO expenses (date, description, value)'
                 f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M")}", "{description}", {value})')
+    cur.execute(f'INSERT INTO classfied_expenses (date, category)'
+                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M")}", "{category}")')
     disconnect_from_database(con)
 
 
-def add_income_to_a_database(value: int, description: str) -> NoReturn:
+def add_income(value: int, description: str) -> NoReturn:
     """
     Adds a money income record to a database
     :param value: amount of income

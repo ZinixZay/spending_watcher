@@ -6,6 +6,7 @@ import traceback
 
 from database_commands import *
 from axuilary_staff import *
+from logical_part import *
 
 
 class MainScreen(QMainWindow):

@@ -1,5 +1,10 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox
 from PyQt5.uic import loadUi
+from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtChart import QPieSeries, QChartView, QChart
+from PyQt5.QtCore import Qt
+
+from PyQt5 import QtWidgets, QtChart, QtCore
 
 import sys
 import traceback
@@ -16,8 +21,10 @@ class MainScreen(QMainWindow):
         self.initUI()
 
     def initUI(self):
+        self.setWindowTitle('Spending watcher')
         self.add_r_but.clicked.connect(self.new_expense)
         self.add_d_but.clicked.connect(self.new_income)
+        self.stat_but.clicked.connect(self.show_chart)
         self.amount_l.setText(str(get_current_amount()))
 
     @staticmethod
@@ -42,6 +49,11 @@ class MainScreen(QMainWindow):
         income_form.value_line.setText('')
         income_form.description_line.setText('')
 
+    @staticmethod
+    def show_chart() -> NoReturn:
+        menu.hide()
+        chart.show()
+
 
 class IncomeForm(QWidget):
     def __init__(self):
@@ -50,6 +62,7 @@ class IncomeForm(QWidget):
         self.initUI()
 
     def initUI(self):
+        self.setWindowTitle('Spending watcher')
         self.add_but.clicked.connect(self.get_content)
 
     @staticmethod
@@ -109,6 +122,7 @@ class SpendForm(QWidget):
         self.initUI()
 
     def initUI(self):
+        self.setWindowTitle('Spending watcher')
         self.add_but.clicked.connect(self.get_content)
 
     @staticmethod
@@ -151,7 +165,7 @@ class SpendForm(QWidget):
             self.create_error_messagebox(str(e), 'Введите числовое значение суммы, которую вы потратили на покупку')
 
         except RecordDescriptionError as e:
-            self.create_error_messagebox(str(e), 'Напишите, на что вы потратили деньги')
+            self.create_error_messagebox(str(e), 'Напишите, где вы потратили деньги')
 
         except Exception:
             self.create_error_messagebox(str(e), 'Произошла непредвиденная ошибка, попробуйте еще раз')
@@ -167,10 +181,79 @@ class SpendForm(QWidget):
             spend_form.hide()
 
 
+class ChartView(QtWidgets.QMainWindow):
+
+    def __init__(self, parent=None):
+        super(ChartView, self).__init__(parent)
+        self.setFixedSize(QtCore.QSize(700, 400))
+
+        datas = [node, connection, other]
+        chart = MyChart(datas)
+        self.setWindowTitle('Spending watcher')
+
+        chart_view = QtChart.QChartView(chart)
+        chart_view.setRenderHint(QtGui.QPainter.Antialiasing)
+        self.setCentralWidget(chart_view)
+
+
+class MyChart(QtChart.QChart):
+
+    def __init__(self, datas, parent=None):
+        super(MyChart, self).__init__(parent)
+        self._datas = datas
+
+        self.legend().hide()
+        self.setAnimationOptions(QtChart.QChart.SeriesAnimations)
+
+        self.outer = QtChart.QPieSeries()
+        self.inner = QtChart.QPieSeries()
+        self.outer.setHoleSize(0.35)
+        self.inner.setPieSize(0.35)
+        self.inner.setHoleSize(0.3)
+
+        self.set_outer_series()
+        self.set_inner_series()
+
+        self.addSeries(self.outer)
+        self.addSeries(self.inner)
+
+    def set_outer_series(self):
+        slices = list()
+        for data in self._datas:
+            slice_ = QtChart.QPieSlice(data.name, data.value)
+            slice_.setLabelVisible()
+            slice_.setColor(data.primary_color)
+            slice_.setLabelBrush(data.primary_color)
+
+            slices.append(slice_)
+            self.outer.append(slice_)
+
+        # label styling
+        for slice_ in slices:
+            color = 'black'
+            if slice_.percentage() > 0.1:
+                slice_.setLabelPosition(QtChart.QPieSlice.LabelInsideHorizontal)
+                color = 'white'
+
+            label = "<p align='center' style='color:{}'>{}<br>{}%</p>".format(
+                color,
+                slice_.label(),
+                round(slice_.percentage()*100, 2)
+                )
+            slice_.setLabel(label)
+
+    def set_inner_series(self):
+        for data in self._datas:
+            slice_ = self.inner.append(data.name, data.value)
+            slice_.setColor(data.secondary_color)
+            slice_.setBorderColor(data.secondary_color)
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     menu = MainScreen()
     spend_form = SpendForm()
     income_form = IncomeForm()
+    chart = ChartView()
     menu.show()
     sys.exit(app.exec())

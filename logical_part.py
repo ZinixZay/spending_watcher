@@ -14,6 +14,6 @@ def select_expense_class(description: str) -> str:
             if fuzz.WRatio(category_trigger, description) >= max_similarity:
                 max_similarity = fuzz.WRatio(category_trigger, description)
                 result = category
-    if max_similarity == 70:
+    if max_similarity == 75:
         result = 'Другое'
     return result

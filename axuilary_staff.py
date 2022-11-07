@@ -1,5 +1,6 @@
 from database_commands import *
 from logical_part import *
+from config import Data
 
 
 class SpendRecord:
@@ -18,7 +19,6 @@ class IncomeRecord:
 
     def submit_record(self):
         add_income(value=self.value, description=self.description)
-
 
 # Error Classes
 
@@ -44,3 +44,7 @@ def get_current_amount() -> int:
     """
     result = count_incomes() - count_expenses()
     return result
+
+
+def get_spend_statistics() -> list:
+    pass

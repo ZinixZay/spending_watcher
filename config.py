@@ -1,3 +1,7 @@
+from collections import namedtuple
+from PyQt5 import QtGui
+
+
 expense_categories = {
     'Cупермаркеты': ['пятерочка', 'магнит', 'магазин', 'супермаркет', 'ларек', 'кб', 'красное белое', 'бристоль'
                      'высшая лига', 'лента', 'ашан', 'спар'],
@@ -8,3 +12,9 @@ expense_categories = {
     'Одежда и Аксессуары': ['эйчедм', 'рынок', 'базар', 'магазин одежды'],
     'Игры': ['дота', 'кс', 'фортнайт', 'радуга', 'танки']
 }
+
+Data = namedtuple('Data', ['name', 'value', 'primary_color', 'secondary_color'])
+
+node = Data('Node', 333, QtGui.QColor("#454895"), QtGui.QColor("#cfeef5"))
+connection = Data('Connection', 105, QtGui.QColor("#D9D9D9"), QtGui.QColor("#fdc4c1"))
+other = Data('Other', 20, QtGui.QColor("#feb543"), QtGui.QColor("#ffe3b8"))

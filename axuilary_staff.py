@@ -46,5 +46,17 @@ def get_current_amount() -> int:
     return result
 
 
-def get_spend_statistics() -> list:
-    pass
+def generate_chart() -> list:
+    all_spends = get_spend_for_stats()
+    spend_category_sum = dict()
+    for spend in all_spends:
+        if spend[0] not in spend_category_sum.keys():
+            spend_category_sum[spend[0]] = spend[1]
+        else:
+            temp = spend_category_sum[spend[0]]
+            temp += spend[1]
+            spend_category_sum[spend[0]] = temp
+    chart_data = list()
+    for category, amount in spend_category_sum.items():
+        chart_data.append(Data(category, amount, QtGui.QColor("#454895"), QtGui.QColor("#cfeef5")))
+    return chart_data

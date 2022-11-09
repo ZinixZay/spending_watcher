@@ -33,9 +33,9 @@ def add_expense(value: int, description: str, category: str) -> NoReturn:
     """
     con, cur = connect_to_database()
     cur.execute(f'INSERT INTO expenses (date, description, value)'
-                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M")}", "{description}", {value})')
+                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}", "{description}", {value})')
     cur.execute(f'INSERT INTO classfied_expenses (date, category)'
-                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M")}", "{category}")')
+                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}", "{category}")')
     disconnect_from_database(con)
 
 
@@ -48,7 +48,7 @@ def add_income(value: int, description: str) -> NoReturn:
     """
     con, cur = connect_to_database()
     cur.execute(f'INSERT INTO incomes (date, description, value)'
-                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M")}", "{description}", {value})')
+                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}", "{description}", {value})')
     disconnect_from_database(con)
 
 
@@ -67,6 +67,22 @@ def count_incomes(month: int = 0, year: int = 0) -> int:
             result += value[0]
     disconnect_from_database(con)
     return result
+
+
+def get_spend_for_stats() -> list:
+    con, cur = connect_to_database()
+    cur.execute(f'SELECT date, category FROM classfied_expenses')
+    with_categories = list()
+    spends = list()
+    for i in cur.fetchall():
+        with_categories.append([i[0], i[1]])
+    for i in with_categories:
+        cur.execute(f"SELECT value FROM expenses WHERE date='{i[0]}'")
+        for j in cur.fetchall():
+            spend = [i[1], j[0]]
+            spends.append(spend)
+    disconnect_from_database(con)
+    return spends
 
 
 def count_expenses(month: int = 0, year: int = 0) -> int:

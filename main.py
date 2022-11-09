@@ -52,6 +52,10 @@ class MainScreen(QMainWindow):
     @staticmethod
     def show_chart() -> NoReturn:
         menu.hide()
+        chart_pie = MyChart(generate_chart())
+        chart_view = QtChart.QChartView(chart_pie)
+        chart_view.setRenderHint(QtGui.QPainter.Antialiasing)
+        chart.setCentralWidget(chart_view)
         chart.show()
 
 
@@ -64,6 +68,12 @@ class IncomeForm(QWidget):
     def initUI(self):
         self.setWindowTitle('Spending watcher')
         self.add_but.clicked.connect(self.get_content)
+        self.back_but.clicked.connect(self.back)
+
+    @staticmethod
+    def back() -> NoReturn:
+        menu.show()
+        income_form.hide()
 
     @staticmethod
     def create_error_messagebox(title: str, text: str) -> NoReturn:
@@ -124,6 +134,7 @@ class SpendForm(QWidget):
     def initUI(self):
         self.setWindowTitle('Spending watcher')
         self.add_but.clicked.connect(self.get_content)
+        self.back_but.clicked.connect(self.back)
 
     @staticmethod
     def create_error_messagebox(title: str, text: str) -> NoReturn:
@@ -139,6 +150,11 @@ class SpendForm(QWidget):
         msg_box.setWindowTitle(title)
         msg_box.setText(text)
         msg_box.exec_()
+
+    @staticmethod
+    def back() -> NoReturn:
+        menu.show()
+        spend_form.hide()
 
     def get_content(self) -> NoReturn:
         """
@@ -187,7 +203,7 @@ class ChartView(QtWidgets.QMainWindow):
         super(ChartView, self).__init__(parent)
         self.setFixedSize(QtCore.QSize(700, 400))
 
-        datas = [node, connection, other]
+        datas = generate_chart()
         chart = MyChart(datas)
         self.setWindowTitle('Spending watcher')
 
@@ -200,7 +216,7 @@ class MyChart(QtChart.QChart):
 
     def __init__(self, datas, parent=None):
         super(MyChart, self).__init__(parent)
-        self._datas = datas
+        self._datas = generate_chart()
 
         self.legend().hide()
         self.setAnimationOptions(QtChart.QChart.SeriesAnimations)

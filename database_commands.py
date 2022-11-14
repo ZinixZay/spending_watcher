@@ -70,6 +70,10 @@ def count_incomes(month: int = 0, year: int = 0) -> int:
 
 
 def get_spend_for_stats() -> list:
+    """
+    Compare database tables and return extense with description replaced as category
+    :return: list with all reworked extenses
+    """
     con, cur = connect_to_database()
     cur.execute(f'SELECT date, category FROM classfied_expenses')
     with_categories = list()
@@ -99,4 +103,15 @@ def count_expenses(month: int = 0, year: int = 0) -> int:
         for value in cur.fetchall():
             result += value[0]
     disconnect_from_database(con)
+    return result
+
+
+def get_history() -> tuple:
+    """
+    Gets all expenses
+    :return: NoReturn
+    """
+    con, cur = connect_to_database()
+    cur.execute(f'SELECT * FROM expenses')
+    result = cur.fetchall()
     return result

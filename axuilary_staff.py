@@ -8,7 +8,11 @@ class SpendRecord:
         self.value = value
         self.description = description
 
-    def submit_record(self):
+    def submit_record(self) -> NoReturn:
+        """
+        Adds an expense to database
+        :return: NoReturn
+        """
         add_expense(value=self.value, description=self.description, category=select_expense_class(self.description))
 
 
@@ -17,7 +21,11 @@ class IncomeRecord:
         self.value = value
         self.description = description
 
-    def submit_record(self):
+    def submit_record(self) -> NoReturn:
+        """
+        Adds an income to database
+        :return: NoReturn
+        """
         add_income(value=self.value, description=self.description)
 
 # Error Classes
@@ -46,7 +54,11 @@ def get_current_amount() -> int:
     return result
 
 
-def generate_chart() -> list:
+def generate_chart_data() -> list:
+    """
+    Reducts data to stock sample for chart work
+    :return: data for chart
+    """
     all_spends = get_spend_for_stats()
     spend_category_sum = dict()
     for spend in all_spends:

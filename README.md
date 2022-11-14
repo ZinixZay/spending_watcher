@@ -33,4 +33,3 @@ python -m pip install -r requirements. txt
 ## Project team
 
 - [Ryzhik Daniel](https://vk.com/ginger20) — Python developer
-- [Aksenova Anastasia](https://vk.com/littlemeoww) — Designer

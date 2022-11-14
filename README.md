@@ -11,17 +11,23 @@ A desktop application which helps people to control and plan their money spendin
 - [SqLite3](https://www.sqlite.org/docs.html)
 
 ## Usage
-Every person who is able to gain and spend money
+Run .exe file
 
 ### Requirements
+- altgraph==0.17.3
+- future==0.18.2
 - fuzzywuzzy==0.18.0
 - Levenshtein==0.20.8
+- pefile==2022.5.30
+- pyinstaller==5.6.2
+- pyinstaller-hooks-contrib==2022.13
 - PyQt5==5.15.7
 - PyQt5-Qt5==5.15.2
 - PyQt5-sip==12.11.0
 - PyQtChart==5.15.6
 - PyQtChart-Qt5==5.15.2
 - python-Levenshtein==0.20.8
+- pywin32-ctypes==0.2.0
 - rapidfuzz==2.13.2
 - six==1.16.0
 

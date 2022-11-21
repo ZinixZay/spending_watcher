@@ -1,35 +1,46 @@
 import sqlite3
-from sqlite3 import Connection
-from typing import NoReturn, Type
+from typing import Type
 from datetime import datetime
 
 
 def connect_to_database() -> Type:
     """
     Connects to a database
-    :return: NoReturn
+    :return: connection and a cursor for database
     """
     con = sqlite3.connect('database/expenses.db')
     cur = con.cursor()
     return con, cur
 
 
-def disconnect_from_database(con: Type) -> NoReturn:
+def disconnect_from_database(con: Type) -> None:
     """
     Disconnects from database
-    :return: NoReturn
+    :return: None
     """
     con.commit()
     con.close()
 
 
-def add_expense(value: int, description: str, category: str) -> NoReturn:
+def drop_database() -> None:
+    """
+    Deletes all inforamtion from database
+    :return: None
+    """
+    con, cur = connect_to_database()
+    cur.execute('DELETE FROM expenses')
+    cur.execute('DELETE FROM incomes')
+    cur.execute('DELETE FROM classfied_expenses')
+    disconnect_from_database(con)
+
+
+def add_expense(value: int, description: str, category: str) -> None:
     """
     Adds a money spend record to a database
     :param value: amount of spended money
     :param description: what was the money spent on
     :param category: category of an expense
-    :return: NoReturn
+    :return: None
     """
     con, cur = connect_to_database()
     cur.execute(f'INSERT INTO expenses (date, description, value)'
@@ -39,16 +50,16 @@ def add_expense(value: int, description: str, category: str) -> NoReturn:
     disconnect_from_database(con)
 
 
-def add_income(value: int, description: str) -> NoReturn:
+def add_income(value: int) -> None:
     """
     Adds a money income record to a database
     :param value: amount of income
     :param description: where were money got
-    :return: NoReturn
+    :return: None
     """
     con, cur = connect_to_database()
-    cur.execute(f'INSERT INTO incomes (date, description, value)'
-                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}", "{description}", {value})')
+    cur.execute(f'INSERT INTO incomes (date, value)'
+                f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}", {value})')
     disconnect_from_database(con)
 
 
@@ -109,7 +120,7 @@ def count_expenses(month: int = 0, year: int = 0) -> int:
 def get_history() -> tuple:
     """
     Gets all expenses
-    :return: NoReturn
+    :return: None
     """
     con, cur = connect_to_database()
     cur.execute(f'SELECT * FROM expenses')

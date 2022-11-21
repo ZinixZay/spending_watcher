@@ -15,7 +15,4 @@ expense_categories = {
 }
 
 Data = namedtuple('Data', ['name', 'value', 'primary_color', 'secondary_color'])
-
-node = Data('Node', 333, QtGui.QColor("#454895"), QtGui.QColor("#cfeef5"))
-connection = Data('Connection', 105, QtGui.QColor("#D9D9D9"), QtGui.QColor("#fdc4c1"))
-other = Data('Other', 20, QtGui.QColor("#feb543"), QtGui.QColor("#ffe3b8"))
+colors = ["#454895", "#32a645", "#13ba9b", "#670e9e", "#a80f87", "#94a80f", "#824710", "#0d9e72", "#c20a16"]

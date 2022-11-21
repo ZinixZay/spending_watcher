@@ -1,6 +1,8 @@
-from database_commands import *
-from logical_part import *
-from config import Data
+from database_commands import add_expense, add_income, count_incomes, get_spend_for_stats, count_expenses
+from logical_part import select_expense_class
+from config import Data, colors
+from random import choice
+from PyQt5.QtGui import QColor
 
 
 class SpendRecord:
@@ -8,47 +10,31 @@ class SpendRecord:
         self.value = value
         self.description = description
 
-    def submit_record(self) -> NoReturn:
+    def submit_record(self) -> None:
         """
         Adds an expense to database
-        :return: NoReturn
+        :return: None
         """
         add_expense(value=self.value, description=self.description, category=select_expense_class(self.description))
 
 
 class IncomeRecord:
-    def __init__(self, value: int, description: str):
+    def __init__(self, value: int):
+        print(1)
         self.value = value
-        self.description = description
 
-    def submit_record(self) -> NoReturn:
+    def submit_record(self) -> None:
         """
         Adds an income to database
-        :return: NoReturn
+        :return: None
         """
-        add_income(value=self.value, description=self.description)
+        add_income(value=self.value)
 
-# Error Classes
-
-
-class AddRecordError(Exception):
-    pass
-
-
-class RecordValueError(AddRecordError):
-    pass
-
-
-class RecordDescriptionError(AddRecordError):
-    pass
-
-
-# Axuilary Functions
 
 def get_current_amount() -> int:
     """
-    Creates txt file with corrent amount of money
-    :return: NoReturn
+    Counts money available
+    :return: money user has
     """
     result = count_incomes() - count_expenses()
     return result
@@ -70,5 +56,8 @@ def generate_chart_data() -> list:
             spend_category_sum[spend[0]] = temp
     chart_data = list()
     for category, amount in spend_category_sum.items():
-        chart_data.append(Data(category, amount, QtGui.QColor("#454895"), QtGui.QColor("#cfeef5")))
+        avail_colors = colors.copy()
+        color = choice(avail_colors)
+        del avail_colors[avail_colors.index(color)]
+        chart_data.append(Data(category, amount, QColor(color), QColor(color)))
     return chart_data

@@ -1,19 +1,21 @@
-from PyQt5 import QtWidgets, QtChart, QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QTableWidgetItem
+from PyQt5 import QtWidgets, QtChart, QtCore, QtGui
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QTableWidgetItem, QAbstractItemView
 from PyQt5.uic import loadUi
-from PyQt5.QtGui import QPainter, QPen
 from PyQt5.QtChart import QPieSeries, QChartView, QChart
 from PyQt5.QtCore import Qt
 
 import sys
-import traceback
 
-from database_commands import *
-from axuilary_staff import *
-from logical_part import *
+from database_commands import get_history, drop_database
+from axuilary_staff import SpendRecord, IncomeRecord, get_current_amount, generate_chart_data
+from error_classes import *
+from logical_part import select_expense_class
 
 
 class MainScreen(QMainWindow):
+    """
+    Main menu screen
+    """
     def __init__(self):
         super(MainScreen, self).__init__()
         loadUi("screens/screen_1.ui", self)
@@ -24,14 +26,15 @@ class MainScreen(QMainWindow):
         self.add_r_but.clicked.connect(self.new_expense)
         self.add_d_but.clicked.connect(self.new_income)
         self.stat_but.clicked.connect(self.show_chart)
+        self.save_but.clicked.connect(self.save_info)
         self.history_but.clicked.connect(self.show_history)
         self.amount_l.setText(str(get_current_amount()))
 
     @staticmethod
-    def new_expense() -> NoReturn:
+    def new_expense() -> None:
         """
         Changes active screen from menu to expense creating
-        :return: NoReturn
+        :return: None
         """
         menu.hide()
         spend_form.show()
@@ -39,21 +42,20 @@ class MainScreen(QMainWindow):
         spend_form.description_line.setText('')
 
     @staticmethod
-    def new_income() -> NoReturn:
+    def new_income() -> None:
         """
         Changes active screen from menu to income form
-        :return: NoReturn
+        :return: None
         """
         menu.hide()
         income_form.show()
         income_form.value_line.setText('')
-        income_form.description_line.setText('')
 
     @staticmethod
-    def show_chart() -> NoReturn:
+    def show_chart() -> None:
         """
         Changes active screen from menu to chart screen
-        :return: NoReturn
+        :return: None
         """
         menu.hide()
         chart_pie = MyChart(generate_chart_data())
@@ -63,17 +65,23 @@ class MainScreen(QMainWindow):
         chart.show()
 
     @staticmethod
-    def show_history() -> NoReturn:
+    def show_history() -> None:
         """
         Changes active screen from menu to history
-        :return: NoReturn
+        :return: None
         """
         menu.hide()
         history.update_result()
         history.show()
 
+    def save_info(self):
+        pass
+
 
 class IncomeForm(QWidget):
+    """
+    Screen with a form of income record
+    """
     def __init__(self):
         super(IncomeForm, self).__init__()
         loadUi("screens/screen_3.ui", self)
@@ -85,21 +93,21 @@ class IncomeForm(QWidget):
         self.back_but.clicked.connect(self.back)
 
     @staticmethod
-    def back() -> NoReturn:
+    def back() -> None:
         """
         Changes active screen from income form to menu
-        :return: NoReturn
+        :return: None
         """
         menu.show()
         income_form.hide()
 
     @staticmethod
-    def create_error_messagebox(title: str, text: str) -> NoReturn:
+    def create_error_messagebox(title: str, text: str) -> None:
         """
         Generates and shows error message
         :param title: title of an error
         :param text: error's description
-        :return: NoReturn
+        :return: None
         """
         msg_box = QMessageBox()
         msg_box.setStandardButtons(QMessageBox.Ok)
@@ -108,34 +116,29 @@ class IncomeForm(QWidget):
         msg_box.setText(text)
         msg_box.exec_()
 
-    def keyPressEvent(self, event) -> NoReturn:
+    def keyPressEvent(self, event) -> None:
         """
         Catches pushed keyboard buttons and marshrouts them
         :param event: compulsory argument
-        :return: NoReturn
+        :return: None
         """
         if event.key() == Qt.Key_Escape:
             menu.show()
             income_form.hide()
 
-    def get_content(self) -> NoReturn:
+    def get_content(self) -> None:
         """
         adds parametres from user to a record and tries to submit it
-        :return: NoReturn
+        :return: None
         """
         try:
-
             try:
                 val = int(self.value_line.text())
             except ValueError:
                 raise RecordValueError('Введено не числовое значение')
             if val <= 0:
                 raise RecordValueError('Введено неверное числовое значение')
-
-            des = str(self.description_line.text())
-            if des == '':
-                raise RecordDescriptionError('Пустое поле содержания покупки')
-            record = IncomeRecord(value=val, description=des)
+            record = IncomeRecord(value=val)
             record.submit_record()
             menu.amount_l.setText(str(get_current_amount()))
 
@@ -160,6 +163,9 @@ class IncomeForm(QWidget):
 
 
 class SpendForm(QWidget):
+    """
+    Screen with a form of expense record
+    """
     def __init__(self):
         super(SpendForm, self).__init__()
         loadUi("screens/screen_2.ui", self)
@@ -171,12 +177,12 @@ class SpendForm(QWidget):
         self.back_but.clicked.connect(self.back)
 
     @staticmethod
-    def create_error_messagebox(title: str, text: str) -> NoReturn:
+    def create_error_messagebox(title: str, text: str) -> None:
         """
         Shows filled pattern of an error message
         :param title: title of the error message
         :param text: text of the error message
-        :return: NoReturn
+        :return: None
         """
         msg_box = QMessageBox()
         msg_box.setStandardButtons(QMessageBox.Ok)
@@ -186,28 +192,28 @@ class SpendForm(QWidget):
         msg_box.exec_()
 
     @staticmethod
-    def back() -> NoReturn:
+    def back() -> None:
         """
         Changes active screen from income form to menu
-        :return: NoReturn
+        :return: None
         """
         menu.show()
         spend_form.hide()
 
-    def keyPressEvent(self, event) -> NoReturn:
+    def keyPressEvent(self, event) -> None:
         """
         Catches pushed keyboard buttons and marshrouts them
         :param event: compulsory argument
-        :return: NoReturn
+        :return: None
         """
         if event.key() == Qt.Key_Escape:
             menu.show()
             spend_form.hide()
 
-    def get_content(self) -> NoReturn:
+    def get_content(self) -> None:
         """
         Adds parametres from user to a record and tries to submit it
-        :return: NoReturn
+        :return: None
         """
         try:
 
@@ -221,6 +227,10 @@ class SpendForm(QWidget):
             des = str(self.description_line.text())
             if des == '':
                 raise RecordDescriptionError('Пустое поле содержания покупки')
+
+            if int(menu.amount_l.text()) - val < 0:
+                raise RecordValueLittleError('Вы тратите больше, чем имеете')
+
             record = SpendRecord(value=val, description=des)
             record.submit_record()
             menu.amount_l.setText(str(get_current_amount()))
@@ -231,7 +241,10 @@ class SpendForm(QWidget):
         except RecordDescriptionError as e:
             self.create_error_messagebox(str(e), 'Напишите, где вы потратили деньги')
 
-        except Exception:
+        except RecordValueLittleError as e:
+            self.create_error_messagebox(str(e), 'Вы тратите больше, чем имеете на счете')
+
+        except Exception as e:
             self.create_error_messagebox(str(e), 'Произошла непредвиденная ошибка, попробуйте еще раз')
 
         else:
@@ -246,7 +259,9 @@ class SpendForm(QWidget):
 
 
 class ChartView(QtWidgets.QMainWindow):
-
+    """
+    Class for chart-view
+    """
     def __init__(self, parent=None):
         super(ChartView, self).__init__(parent)
         self.setFixedSize(QtCore.QSize(700, 400))
@@ -259,11 +274,11 @@ class ChartView(QtWidgets.QMainWindow):
         chart_view.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setCentralWidget(chart_view)
 
-    def keyPressEvent(self, event) -> NoReturn:
+    def keyPressEvent(self, event) -> None:
         """
         Catches pushed keyboard buttons and marshrouts them
         :param event: compulsory argument
-        :return: NoReturn
+        :return: None
         """
         if event.key() == Qt.Key_Escape:
             menu.show()
@@ -271,7 +286,9 @@ class ChartView(QtWidgets.QMainWindow):
 
 
 class MyChart(QtChart.QChart):
-
+    """
+    Subclass of chart which represents in program
+    """
     def __init__(self, datas, parent=None):
         super(MyChart, self).__init__(parent)
         self._datas = generate_chart_data()
@@ -291,10 +308,10 @@ class MyChart(QtChart.QChart):
         self.addSeries(self.outer)
         self.addSeries(self.inner)
 
-    def set_outer_series(self) -> NoReturn:
+    def set_outer_series(self) -> None:
         """
         Sorts data into the chart
-        :return: NoReturn
+        :return: None
         """
         slices = list()
         for data in self._datas:
@@ -317,10 +334,10 @@ class MyChart(QtChart.QChart):
                 )
             slice_.setLabel(label)
 
-    def set_inner_series(self) -> NoReturn:
+    def set_inner_series(self) -> None:
         """
         Sets chart style
-        :return: NoReturn
+        :return: None
         """
         for data in self._datas:
             slice_ = self.inner.append(data.name, data.value)
@@ -329,26 +346,50 @@ class MyChart(QtChart.QChart):
 
 
 class History(QWidget):
+    """
+    Screen with hosty of expense records
+    """
     def __init__(self):
         super().__init__()
         loadUi("screens/screen_4.ui", self)
         self.setWindowTitle('Spending watcher')
         self.update_result()
+        self.clean_but.clicked.connect(self.drop_database)
+        self.back_but.clicked.connect(self.back_to_menu)
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-    def keyPressEvent(self, event) -> NoReturn:
+    @staticmethod
+    def back_to_menu() -> None:
+        """
+        Changes active screen from history to menu
+        :return: None
+        """
+        menu.show()
+        history.hide()
+
+    def drop_database(self) -> None:
+        """
+        Clears database and changes active screen from history to menu
+        :return: None
+        """
+        drop_database()
+        self.back_to_menu()
+        sys.exit(app.exec())
+
+    def keyPressEvent(self, event) -> None:
         """
         Catches pushed keyboard buttons and marshrouts them
         :param event: compulsory argument
-        :return: NoReturn
+        :return: None
         """
         if event.key() == Qt.Key_Escape:
             menu.show()
             history.hide()
 
-    def update_result(self) -> NoReturn:
+    def update_result(self) -> None:
         """
         Updates table widget
-        :return: NoReturn
+        :return: None
         """
         result = get_history()
         if not result:

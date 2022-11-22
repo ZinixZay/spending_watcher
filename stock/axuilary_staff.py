@@ -1,6 +1,6 @@
 from database_commands import add_expense, add_income, count_incomes, get_spend_for_stats, count_expenses
 from logical_part import select_expense_class
-from config import Data, colors
+from config import Data, colors, imgs
 from random import choice
 from PyQt5.QtGui import QColor
 
@@ -26,7 +26,6 @@ class IncomeRecord:
     Class of an income record
     """
     def __init__(self, value: int):
-        print(1)
         self.value = value
 
     def submit_record(self) -> None:
@@ -67,3 +66,26 @@ def generate_chart_data() -> list:
         del avail_colors[avail_colors.index(color)]
         chart_data.append(Data(category, amount, QColor(color), QColor(color)))
     return chart_data
+
+
+def choose_photo(val: int) -> str:
+    """
+    Finds suitable photo for current amount
+    :param val: current balance
+    :return: path to a photo
+    """
+    if val == 0:
+        path = f'img/{imgs[4]}'
+    elif val < 100:
+        path = f'img/{imgs[1]}'
+    elif val < 500:
+        path = f'img/{imgs[2]}'
+    elif val < 5000:
+        path = f'img/{imgs[3]}'
+    elif val < 15000:
+        path = f'img/{imgs[5]}'
+    elif val < 100000:
+        path = f'img/{imgs[0]}'
+    else:
+        path = f'img/{imgs[-1]}'
+    return path

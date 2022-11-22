@@ -3,13 +3,14 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QTa
     QAbstractItemView, QFileDialog
 from PyQt5.uic import loadUi
 from PyQt5.QtChart import QPieSeries, QChartView, QChart
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QImage, QPalette, QBrush
 
 import sys
 from datetime import datetime
 
 from database_commands import get_history, drop_database, count_incomes, count_expenses
-from axuilary_staff import SpendRecord, IncomeRecord, get_current_amount, generate_chart_data
+from axuilary_staff import SpendRecord, IncomeRecord, get_current_amount, generate_chart_data, choose_photo
 from error_classes import *
 from logical_part import select_expense_class
 
@@ -25,12 +26,23 @@ class MainScreen(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle('Spending watcher')
+        self.setFixedSize(900, 900)
         self.add_r_but.clicked.connect(self.new_expense)
         self.add_d_but.clicked.connect(self.new_income)
         self.stat_but.clicked.connect(self.show_chart)
         self.save_but.clicked.connect(self.save_info)
         self.history_but.clicked.connect(self.show_history)
         self.amount_l.setText(str(get_current_amount()))
+        self.update_photo()
+
+    def update_photo(self):
+        val = int(self.amount_l.text())
+        path = choose_photo(val)
+        oImage = QImage(path)
+        sImage = oImage.scaled(QSize(900, 900))
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(sImage))
+        self.setPalette(palette)
 
     @staticmethod
     def new_expense() -> None:
@@ -76,7 +88,11 @@ class MainScreen(QMainWindow):
         history.update_result()
         history.show()
 
-    def save_info(self):
+    def save_info(self) -> None:
+        """
+        Saves current information in a short way
+        :return: None
+        """
         file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         amount = self.amount_l.text()
         date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
@@ -118,6 +134,7 @@ class IncomeForm(QWidget):
         Changes active screen from income form to menu
         :return: None
         """
+        menu.update_photo()
         menu.show()
         income_form.hide()
 
@@ -143,6 +160,7 @@ class IncomeForm(QWidget):
         :return: None
         """
         if event.key() == Qt.Key_Escape:
+            menu.update_photo()
             menu.show()
             income_form.hide()
 
@@ -178,6 +196,7 @@ class IncomeForm(QWidget):
             msg_box.setWindowTitle('Запись добавлена')
             msg_box.setText('Ваша запись была успешна добавлена')
             msg_box.exec_()
+            menu.update_photo()
             menu.show()
             income_form.hide()
 
@@ -217,6 +236,7 @@ class SpendForm(QWidget):
         Changes active screen from income form to menu
         :return: None
         """
+        menu.update_photo()
         menu.show()
         spend_form.hide()
 
@@ -227,6 +247,7 @@ class SpendForm(QWidget):
         :return: None
         """
         if event.key() == Qt.Key_Escape:
+            menu.update_photo()
             menu.show()
             spend_form.hide()
 
@@ -274,6 +295,7 @@ class SpendForm(QWidget):
             msg_box.setWindowTitle('Запись добавлена')
             msg_box.setText('Ваша запись была успешна добавлена')
             msg_box.exec_()
+            menu.update_photo()
             menu.show()
             spend_form.hide()
 
@@ -301,6 +323,7 @@ class ChartView(QtWidgets.QMainWindow):
         :return: None
         """
         if event.key() == Qt.Key_Escape:
+            menu.update_photo()
             menu.show()
             chart.hide()
 
@@ -384,6 +407,7 @@ class History(QWidget):
         Changes active screen from history to menu
         :return: None
         """
+        menu.update_photo()
         menu.show()
         history.hide()
 
@@ -403,6 +427,7 @@ class History(QWidget):
         :return: None
         """
         if event.key() == Qt.Key_Escape:
+            menu.update_photo()
             menu.show()
             history.hide()
 

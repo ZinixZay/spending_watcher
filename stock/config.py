@@ -16,3 +16,4 @@ expense_categories = {
 
 Data = namedtuple('Data', ['name', 'value', 'primary_color', 'secondary_color'])
 colors = ["#454895", "#32a645", "#13ba9b", "#670e9e", "#a80f87", "#94a80f", "#824710", "#0d9e72", "#c20a16"]
+imgs = ['a_lot', 'little_1', 'little_2', 'little_3', 'no_money', 'norm', 'to_a_lot']

@@ -6,6 +6,9 @@ from PyQt5.QtGui import QColor
 
 
 class SpendRecord:
+    """
+    Class of an extense record
+    """
     def __init__(self, value: int, description: str):
         self.value = value
         self.description = description
@@ -19,6 +22,9 @@ class SpendRecord:
 
 
 class IncomeRecord:
+    """
+    Class of an income record
+    """
     def __init__(self, value: int):
         print(1)
         self.value = value

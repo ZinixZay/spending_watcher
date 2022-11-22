@@ -1,12 +1,14 @@
 from PyQt5 import QtWidgets, QtChart, QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QTableWidgetItem, QAbstractItemView
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QTableWidgetItem, \
+    QAbstractItemView, QFileDialog
 from PyQt5.uic import loadUi
 from PyQt5.QtChart import QPieSeries, QChartView, QChart
 from PyQt5.QtCore import Qt
 
 import sys
+from datetime import datetime
 
-from database_commands import get_history, drop_database
+from database_commands import get_history, drop_database, count_incomes, count_expenses
 from axuilary_staff import SpendRecord, IncomeRecord, get_current_amount, generate_chart_data
 from error_classes import *
 from logical_part import select_expense_class
@@ -75,7 +77,25 @@ class MainScreen(QMainWindow):
         history.show()
 
     def save_info(self):
-        pass
+        file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        amount = self.amount_l.text()
+        date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        try:
+            with open(f"{file}/info.txt", mode='r') as f:
+                prev = ''.join([i for i in f.readlines()])
+        except Exception:
+            prev = ''
+        with open(f"{file}/info.txt", mode='w') as f:
+            information = f'{prev}\n----------------\nНа {date} - {amount} на балансе\n' \
+                          f'Потрачено всего - {count_expenses()}\n' \
+                          f'Заработано всего - {count_incomes()}\n\n'
+            f.write(information)
+        msg_box = QMessageBox()
+        msg_box.setStandardButtons(QMessageBox.Ok)
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setWindowTitle('Данные сохранени')
+        msg_box.setText('Ваши данные были успешно сохранены')
+        msg_box.exec_()
 
 
 class IncomeForm(QWidget):

@@ -24,20 +24,20 @@ def disconnect_from_database(con: Type) -> None:
 
 def drop_database() -> None:
     """
-    Deletes all inforamtion from database
+    Deletes all information from database
     :return: None
     """
     con, cur = connect_to_database()
     cur.execute('DELETE FROM expenses')
     cur.execute('DELETE FROM incomes')
-    cur.execute('DELETE FROM classfied_expenses')
+    cur.execute('DELETE FROM classified_expenses')
     disconnect_from_database(con)
 
 
 def add_expense(value: int, description: str, category: str) -> None:
     """
     Adds a money spend record to a database
-    :param value: amount of spended money
+    :param value: amount of spent money
     :param description: what was the money spent on
     :param category: category of an expense
     :return: None
@@ -45,7 +45,7 @@ def add_expense(value: int, description: str, category: str) -> None:
     con, cur = connect_to_database()
     cur.execute(f'INSERT INTO expenses (date, description, value)'
                 f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}", "{description}", {value})')
-    cur.execute(f'INSERT INTO classfied_expenses (date, category)'
+    cur.execute(f'INSERT INTO classified_expenses (date, category)'
                 f'VALUES ("{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}", "{category}")')
     disconnect_from_database(con)
 
@@ -54,7 +54,6 @@ def add_income(value: int) -> None:
     """
     Adds a money income record to a database
     :param value: amount of income
-    :param description: where were money got
     :return: None
     """
     con, cur = connect_to_database()
@@ -82,11 +81,11 @@ def count_incomes(month: int = 0, year: int = 0) -> int:
 
 def get_spend_for_stats() -> list:
     """
-    Compare database tables and return extense with description replaced as category
-    :return: list with all reworked extenses
+    Compare database tables and return expenses with description replaced as category
+    :return: list with all reworked expenses
     """
     con, cur = connect_to_database()
-    cur.execute(f'SELECT date, category FROM classfied_expenses')
+    cur.execute(f'SELECT date, category FROM classified_expenses')
     with_categories = list()
     spends = list()
     for i in cur.fetchall():

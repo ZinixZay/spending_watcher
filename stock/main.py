@@ -33,7 +33,10 @@ class MainScreen(QMainWindow):
         self.amount_l.setText(str(get_current_amount()))
         self.update_photo()
 
-    def update_photo(self):
+    def update_photo(self) -> None:
+        """
+        Find out the most appropriate photo for money amount
+        """
         val = int(self.amount_l.text())
         path = choose_photo(val)
         oImage = QImage(path)
@@ -97,7 +100,7 @@ class MainScreen(QMainWindow):
         try:
             with open(f"{file}/info.txt", mode='r') as f:
                 prev = ''.join([i for i in f.readlines()])
-        except Exception:
+        except FileNotFoundError:
             prev = ''
         with open(f"{file}/info.txt", mode='w') as f:
             information = f'{prev}\n----------------\nНа {date} - {amount} на балансе\n' \
@@ -240,7 +243,7 @@ class SpendForm(QWidget):
 
     def keyPressEvent(self, event) -> None:
         """
-        Catches pushed keyboard buttons and marshrouts them
+        Catches pushed keyboard buttons and marsh-routs them
         :param event: compulsory argument
         :return: None
         """
@@ -251,7 +254,7 @@ class SpendForm(QWidget):
 
     def get_content(self) -> None:
         """
-        Adds parametres from user to a record and tries to submit it
+        Adds parameters from user to a record and tries to submit it
         :return: None
         """
         try:
@@ -316,7 +319,7 @@ class ChartView(QtWidgets.QMainWindow):
 
     def keyPressEvent(self, event) -> None:
         """
-        Catches pushed keyboard buttons and marshrouts them
+        Catches pushed keyboard buttons and marsh routs them
         :param event: compulsory argument
         :return: None
         """
@@ -420,7 +423,7 @@ class History(QWidget):
 
     def keyPressEvent(self, event) -> None:
         """
-        Catches pushed keyboard buttons and marshrouts them
+        Catches pushed keyboard buttons and marsh routs them
         :param event: compulsory argument
         :return: None
         """

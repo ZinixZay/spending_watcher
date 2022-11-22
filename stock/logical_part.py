@@ -9,11 +9,10 @@ def select_expense_class(description: str) -> str:
     :return: the enough similar category or 'another' category if such was not found
     """
     max_similarity = 70
+    result = 'Другое'
     for category, category_triggers in expense_categories.items():
         for category_trigger in category_triggers:
             if fuzz.WRatio(category_trigger, description) >= max_similarity:
                 max_similarity = fuzz.WRatio(category_trigger, description)
                 result = category
-    if max_similarity == 70:
-        result = 'Другое'
     return result

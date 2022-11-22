@@ -7,7 +7,7 @@ from PyQt5.QtGui import QColor
 
 class SpendRecord:
     """
-    Class of an extense record
+    Class of an expense record
     """
     def __init__(self, value: int, description: str):
         self.value = value
@@ -47,7 +47,7 @@ def get_current_amount() -> int:
 
 def generate_chart_data() -> list:
     """
-    Reducts data to stock sample for chart work
+    Reduces data to stock sample for chart work
     :return: data for chart
     """
     all_spends = get_spend_for_stats()

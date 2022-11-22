@@ -335,6 +335,9 @@ class MyChart(QtChart.QChart):
     """
     def __init__(self, datas, parent=None):
         super(MyChart, self).__init__(parent)
+        self.initUI()
+
+    def initUI(self):
         self._datas = generate_chart_data()
 
         self.legend().hide()

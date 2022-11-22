@@ -3,7 +3,7 @@ from typing import Type
 from datetime import datetime
 
 
-def connect_to_database() -> Type:
+def connect_to_database() -> tuple:
     """
     Connects to a database
     :return: connection and a cursor for database

@@ -2,7 +2,6 @@ from PyQt5 import QtWidgets, QtChart, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QTableWidgetItem, \
     QAbstractItemView, QFileDialog
 from PyQt5.uic import loadUi
-from PyQt5.QtChart import QPieSeries, QChartView, QChart
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QImage, QPalette, QBrush
 
@@ -12,7 +11,6 @@ from datetime import datetime
 from database_commands import get_history, drop_database, count_incomes, count_expenses
 from axuilary_staff import SpendRecord, IncomeRecord, get_current_amount, generate_chart_data, choose_photo
 from error_classes import *
-from logical_part import select_expense_class
 
 
 class MainScreen(QMainWindow):
@@ -186,7 +184,7 @@ class IncomeForm(QWidget):
         except RecordDescriptionError as e:
             self.create_error_messagebox(str(e), 'Напишите, за что вы получили деньги')
 
-        except Exception:
+        except Exception as e:
             self.create_error_messagebox(str(e), 'Произошла непредвиденная ошибка, попробуйте еще раз')
 
         else:

@@ -1,5 +1,4 @@
 from collections import namedtuple
-from PyQt5 import QtGui
 
 
 expense_categories = {
